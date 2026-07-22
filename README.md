@@ -299,6 +299,10 @@ python build.py
 **آیا چیدمان‌های دیگر پشتیبانی می‌شوند؟**
 فعلاً فقط انگلیسی ↔ فارسی. نگاشت در `core/layout_map.py` یک دیکشنری ساده است و اضافه کردن چیدمان جدید عمدتاً وارد کردن داده است. Pull Request پذیرفته می‌شود.
 
+## تاریخچهٔ تغییرات
+
+فهرست کامل تغییرات هر نسخه در [`CHANGELOG.md`](CHANGELOG.md) است.
+
 ## مشارکت
 
 Issue و Pull Request پذیرفته می‌شود. اگر باگی گزارش می‌کنید، مفیدترین چیزی که می‌توانید ضمیمه کنید فایل گزارش در `%LOCALAPPDATA%\KeyMagic\keymagic.log` است.
@@ -567,6 +571,10 @@ Yes — clone the repo and run `python main.py`.
 
 **Does it support other layouts?**
 Only English ↔ Persian today. The map in `core/layout_map.py` is a plain dictionary; adding another layout is mostly data entry. PRs welcome.
+
+## Changelog
+
+Every release is documented in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Contributing
 
