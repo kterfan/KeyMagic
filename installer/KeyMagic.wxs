@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  KeyMagic — MSI package (WiX Toolset).
+
+  The MSI exists for environments that require one: Group Policy software
+  deployment, Intune/SCCM, and enterprise imaging all consume MSI but not
+  a bespoke EXE. It is intentionally plainer than the Inno installer — MSI's
+  built-in UI cannot be restyled the way the branded bilingual wizard can,
+  so the EXE remains the installer end users are meant to run.
+
+  Built by ../build.py, which passes SourceDir (the PyInstaller output) and
+  AppVersion in as preprocessor variables.
+-->
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <Product Id="*"
+           Name="KeyMagic"
+           Language="1033"
+           Version="$(var.AppVersion)"
+           Manufacturer="Erfan Esmailzadeh"
+           UpgradeCode="B8E4D3F2-7C5A-4F9B-A1D6-2E3F4A5B6C7D">
+
+    <Package InstallerVersion="500"
+             Compressed="yes"
+             InstallScope="perMachine"
+             Description="KeyMagic — keyboard layout fixer"
+             Comments="Created by Erfan Esmailzadeh" />
+
+    <!-- Replace older versions in place rather than stacking installs. -->
+    <MajorUpgrade DowngradeErrorMessage="A newer version of KeyMagic is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Icon Id="AppIcon.ico" SourceFile="..\assets\icon.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/kterfan/KeyMagic" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/kterfan/KeyMagic" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLFOLDER" Name="KeyMagic" />
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="AppProgramMenuFolder" Name="KeyMagic" />
+      </Directory>
+    </Directory>
+
+    <!--
+      HarvestDirectory (via heat) would normally enumerate the PyInstaller
+      output. Keeping the payload as a single onefile executable instead
+      means the component list stays stable and hand-auditable.
+    -->
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="MainExecutable" Guid="C9F5E4A3-8D6B-4A0C-B2E7-3F4A5B6C7D8E">
+        <File Id="KeyMagicExe"
+              Source="$(var.SourceDir)\KeyMagic.exe"
+              KeyPath="yes"
+              Checksum="yes" />
+      </Component>
+
+      <Component Id="AppIconFile" Guid="D0A6F5B4-9E7C-4B1D-C3F8-4A5B6C7D8E9F">
+        <File Id="IconFile" Source="..\assets\icon.ico" KeyPath="yes" />
+      </Component>
+
+      <Component Id="AutoStartEntry" Guid="E1B7A6C5-AF8D-4C2E-D4A9-5B6C7D8E9F00">
+        <!--
+          Per-user Run key, matching what the app writes at runtime. It lives
+          under HKCU so the app can toggle it later without elevation; the
+          MSI only seeds it. Removed on uninstall.
+        -->
+        <RegistryValue Root="HKCU"
+                       Key="Software\Microsoft\Windows\CurrentVersion\Run"
+                       Name="KeyMagic"
+                       Type="string"
+                       Value="&quot;[INSTALLFOLDER]KeyMagic.exe&quot;"
+                       KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="ShortcutComponents" Directory="AppProgramMenuFolder">
+      <Component Id="ProgramMenuShortcut" Guid="F2C8B7D6-B09E-4D3F-E5BA-6C7D8E9F0011">
+        <Shortcut Id="StartMenuShortcut"
+                  Name="KeyMagic"
+                  Description="Fix wrong-layout typing anywhere on Windows"
+                  Target="[INSTALLFOLDER]KeyMagic.exe"
+                  Icon="AppIcon.ico"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveAppProgramMenuFolder" On="uninstall" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\Erfan Esmailzadeh\KeyMagic"
+                       Name="installed"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <Feature Id="MainFeature" Title="KeyMagic" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="ShortcutComponents" />
+    </Feature>
+
+    <UIRef Id="WixUI_InstallDir" />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+  </Product>
+</Wix>

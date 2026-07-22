@@ -1,0 +1,18 @@
+# Clipboard access — pywin32 gives us sequence-number-based synchronization,
+# which is what makes the clipboard swap race-condition free.
+pywin32>=306
+
+# System tray icon + context menu
+pystray>=0.19.5
+
+# Icon image generation for the tray
+Pillow>=10.0.0
+
+# Modern Windows 11 toast notifications
+win11toast>=0.35
+
+# NOTE: the `keyboard` library is deliberately NOT used. Its suppress-mode
+# hook buffers every Ctrl press to detect combinations, which corrupted the
+# synthetic Ctrl+C this app injects (a bare `c` reached the target window
+# instead). Global hotkeys go through the Win32 RegisterHotKey API and key
+# simulation through SendInput — both via ctypes, no extra dependency.
