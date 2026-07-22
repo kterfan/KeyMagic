@@ -140,10 +140,44 @@ Hello my friend         ←  [F10]  ←      اثممخ ئغ بقهثدی
 
 **[⬇️ KeyMagic.msi](https://github.com/kterfan/KeyMagic/releases/latest)** — برای استقرار سازمانی از طریق Group Policy یا Intune.
 
-> [!WARNING]
-> **ویندوز هشدار می‌دهد که ناشر ناشناس است.** این طبیعی است — فایل نصب امضای دیجیتال ندارد، چون گواهی امضای کد سالانه چند صد دلار هزینه دارد. روی **More info ← Run anyway** بزنید. اگر ترجیح می‌دهید اعتماد نکنید، می‌توانید کد را کلون کرده و با `python build.py` خودتان فایل نصب را بسازید.
-
 **پیش‌نیاز:** ویندوز ۱۰ یا ۱۱ (۶۴ بیتی). چیز دیگری لازم نیست — پایتون داخل فایل قرار دارد.
+
+### ⚠️ ویندوز می‌گوید «Windows protected your PC» — چه کنم؟
+
+<div align="center">
+<img src="assets/screenshots/smartscreen.png" width="420" alt="هشدار SmartScreen">
+</div>
+
+**این خطا نیست و ویروس هم نیست.** روی **Run anyway** بزنید تا نصب ادامه پیدا کند. (اگر این دکمه را نمی‌بینید، اول روی **More info** بزنید.)
+
+**چرا این پیام می‌آید؟** SmartScreen به دو چیز نگاه می‌کند و KeyMagic فعلاً هیچ‌کدام را ندارد:
+
+| معیار | وضعیت |
+|:--|:--|
+| امضای دیجیتال (Code Signing) | ندارد — گواهی‌اش سالانه ۱۰۰ تا ۴۰۰ دلار هزینه دارد |
+| سابقهٔ دانلود | تازه منتشر شده؛ هنوز کسی دانلود نکرده که برایش اعتبار بسازد |
+
+هیچ‌کدام از این دو دربارهٔ سالم بودن فایل چیزی نمی‌گویند — فقط یعنی «ویندوز این فایل را نمی‌شناسد». هر چه تعداد دانلودها بیشتر شود، این هشدار خودبه‌خود کمرنگ‌تر و بعد حذف می‌شود.
+
+**اگر می‌خواهید مطمئن شوید فایل دستکاری نشده،** چک‌سام دانلودتان را با فایل [`SHA256SUMS.txt`](https://github.com/kterfan/KeyMagic/releases/latest) مقایسه کنید:
+
+<div dir="ltr" align="left">
+
+```powershell
+Get-FileHash KeyMagic-1.0.0-Setup.exe -Algorithm SHA256
+```
+
+</div>
+
+**یا اصلاً به فایل من اعتماد نکنید** — کد کاملاً باز است. کلون کنید و خودتان بسازید:
+
+<div dir="ltr" align="left">
+
+```bash
+git clone https://github.com/kterfan/KeyMagic.git && cd KeyMagic && python build.py
+```
+
+</div>
 
 ### چرا دسترسی ادمین می‌خواهد؟
 
@@ -349,10 +383,36 @@ The source language is set to **auto-detect** (`sl=auto&tl=auto`), so you never 
 
 **[⬇️ KeyMagic.msi](https://github.com/kterfan/KeyMagic/releases/latest)** — for Group Policy, Intune or SCCM.
 
-> [!WARNING]
-> **Windows will warn you that the publisher is unknown.** That is expected — the installer is not code-signed, because a certificate costs a few hundred dollars a year. Click **More info → Run anyway**. If you'd rather not trust it, clone the repo and run `python build.py` to build it yourself.
-
 **Requirements:** Windows 10 or 11 (64-bit). Nothing else — Python is bundled.
+
+### ⚠️ "Windows protected your PC" — what to do
+
+<div align="center">
+<img src="assets/screenshots/smartscreen.png" width="420" alt="SmartScreen warning">
+</div>
+
+**This is not an error and not a virus.** Click **Run anyway** and the install continues. (If you don't see that button, click **More info** first.)
+
+**Why it appears:** SmartScreen weighs two things, and KeyMagic currently has neither.
+
+| Signal | Status |
+|:--|:--|
+| Code-signing certificate | None — a certificate costs $100–400 per year |
+| Download reputation | Freshly published; nobody has downloaded it yet to build any |
+
+Neither says anything about whether the file is safe — only that Windows doesn't recognise it. The warning fades and eventually disappears on its own as downloads accumulate.
+
+**To verify the download wasn't tampered with,** compare it against [`SHA256SUMS.txt`](https://github.com/kterfan/KeyMagic/releases/latest) in the release:
+
+```powershell
+Get-FileHash KeyMagic-1.0.0-Setup.exe -Algorithm SHA256
+```
+
+**Or don't trust my binary at all** — the source is right here. Clone it and build your own:
+
+```bash
+git clone https://github.com/kterfan/KeyMagic.git && cd KeyMagic && python build.py
+```
 
 ### Why it asks for administrator
 
