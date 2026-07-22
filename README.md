@@ -148,7 +148,27 @@ Hello my friend         ←  [F10]  ←      اثممخ ئغ بقهثدی
 <img src="assets/screenshots/smartscreen.png" width="420" alt="هشدار SmartScreen">
 </div>
 
-**این خطا نیست و ویروس هم نیست.** روی **Run anyway** بزنید تا نصب ادامه پیدا کند. (اگر این دکمه را نمی‌بینید، اول روی **More info** بزنید.)
+**این خطا نیست و ویروس هم نیست.** دو راه دارید:
+
+**راه اول — سریع:** روی **Run anyway** بزنید. (اگر این دکمه را نمی‌بینید، اول **More info** را بزنید.)
+
+**راه دوم — تمیزتر:** برچسب اینترنتی فایل را حذف کنید تا اصلاً هشدار ندهد:
+
+> راست‌کلیک روی فایل ← **Properties** ← پایین تب General تیک **Unblock** را بزنید ← **OK**
+
+بعد از این، فایل مثل هر برنامهٔ محلی دیگری اجرا می‌شود. با پاورشل هم می‌شود:
+
+<div dir="ltr" align="left">
+
+```powershell
+Unblock-File .\KeyMagic-1.0.1-Setup.exe
+```
+
+</div>
+
+**چرا این کار جواب می‌دهد؟** ویندوز به هر فایلی که از اینترنت می‌آید یک نشانهٔ نامرئی می‌چسباند (*Mark of the Web* — یک NTFS Alternate Data Stream به نام `Zone.Identifier`). SmartScreen **فقط** فایل‌هایی را که این نشانه را دارند بررسی می‌کند. `Unblock` آن نشانه را پاک می‌کند.
+
+به همین دلیل است که اگر خودتان پروژه را با `python build.py` بسازید، هرگز این هشدار را نمی‌بینید — فایل ساخته‌شدهٔ محلی هیچ‌وقت آن برچسب را ندارد.
 
 **چرا این پیام می‌آید؟** SmartScreen به دو چیز نگاه می‌کند و KeyMagic فعلاً هیچ‌کدام را ندارد:
 
@@ -164,7 +184,7 @@ Hello my friend         ←  [F10]  ←      اثممخ ئغ بقهثدی
 <div dir="ltr" align="left">
 
 ```powershell
-Get-FileHash KeyMagic-1.0.0-Setup.exe -Algorithm SHA256
+Get-FileHash KeyMagic-1.0.1-Setup.exe -Algorithm SHA256
 ```
 
 </div>
@@ -391,7 +411,23 @@ The source language is set to **auto-detect** (`sl=auto&tl=auto`), so you never 
 <img src="assets/screenshots/smartscreen.png" width="420" alt="SmartScreen warning">
 </div>
 
-**This is not an error and not a virus.** Click **Run anyway** and the install continues. (If you don't see that button, click **More info** first.)
+**This is not an error and not a virus.** Two ways past it:
+
+**Quickest:** click **Run anyway**. (If you don't see that button, click **More info** first.)
+
+**Cleaner:** strip the file's internet tag so the warning never appears at all:
+
+> Right-click the file → **Properties** → tick **Unblock** at the bottom of the General tab → **OK**
+
+After that it runs like any local program. From PowerShell:
+
+```powershell
+Unblock-File .\KeyMagic-1.0.1-Setup.exe
+```
+
+**Why that works:** Windows attaches an invisible marker to anything downloaded from the internet — the *Mark of the Web*, an NTFS alternate data stream called `Zone.Identifier`. SmartScreen only evaluates files carrying it. `Unblock` removes the marker.
+
+It's also why building the project yourself with `python build.py` never triggers the warning: a locally produced file never gets the tag in the first place.
 
 **Why it appears:** SmartScreen weighs two things, and KeyMagic currently has neither.
 
@@ -405,7 +441,7 @@ Neither says anything about whether the file is safe — only that Windows doesn
 **To verify the download wasn't tampered with,** compare it against [`SHA256SUMS.txt`](https://github.com/kterfan/KeyMagic/releases/latest) in the release:
 
 ```powershell
-Get-FileHash KeyMagic-1.0.0-Setup.exe -Algorithm SHA256
+Get-FileHash KeyMagic-1.0.1-Setup.exe -Algorithm SHA256
 ```
 
 **Or don't trust my binary at all** — the source is right here. Clone it and build your own:
