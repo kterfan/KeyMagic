@@ -9,7 +9,7 @@
 ; ============================================================================
 
 #define AppName        "KeyMagic"
-#define AppVersion     "1.0.0"
+#define AppVersion     "1.0.1"
 #define AppPublisher   "Erfan Esmailzadeh"
 #define AppURL         "https://github.com/kterfan/KeyMagic"
 #define AppExeName     "KeyMagic.exe"
@@ -97,7 +97,12 @@ Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#AppName}";  Filename: "{app}\{#AppExeName}"; IconFilename: "{app}\icon.ico"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\{#AppExeName}"; Description: "{cm:LaunchAfter}"; Flags: nowait postinstall skipifsilent
+; `shellexec` is required, not cosmetic. The app ships a requireAdministrator
+; manifest, and Inno's default CreateProcess cannot raise privileges — it
+; fails with "CreateProcess failed; code 740 - The requested operation
+; requires elevation" the moment Setup tries to launch it. ShellExecute is
+; the API that knows how to satisfy an elevation request.
+Filename: "{app}\{#AppExeName}"; Description: "{cm:LaunchAfter}"; Flags: nowait postinstall skipifsilent shellexec
 
 ; No [UninstallDelete] for the app's per-user settings/log directories.
 ; The uninstaller runs elevated, so {userappdata} would resolve to the
@@ -151,7 +156,17 @@ begin
 end;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+var
+  ResultCode: Integer;
 begin
   if CurUninstallStep = usUninstall then
+  begin
+    // Autostart is a scheduled task (a Run-key entry cannot start an
+    // elevation-requiring app at logon — Windows skips it silently).
+    Exec(ExpandConstant('{sys}\schtasks.exe'),
+         '/Delete /TN "{#AppName}" /F', '', SW_HIDE,
+         ewWaitUntilTerminated, ResultCode);
+    // Also clear the Run value that pre-1.0.1 builds wrote.
     RegDeleteValue(HKEY_CURRENT_USER, RunKey, '{#AppName}');
+  end;
 end;
