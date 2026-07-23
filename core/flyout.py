@@ -47,8 +47,9 @@ _BG_ELEVATED = "#2c2c2e"
 _BG_HOVER = "#3a3a3c"
 _TEXT = "#f5f5f7"
 _TEXT_DIM = "#98989d"
-_ACCENT = "#7c5cff"
-_ACCENT_DIM = "#4c3a99"
+# Sampled from the application artwork (assets/icon-source.png) so the panel
+# and the tray icon that opens it share one palette.
+_ACCENT = "#d66a3e"
 _SEPARATOR = "#38383a"
 
 _PANEL_WIDTH = 320

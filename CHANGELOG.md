@@ -7,6 +7,33 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); version
 
 ---
 
+## [1.0.2] — 2026-07-23
+
+### Changed
+
+- **New application artwork** — a 3D render of keycaps on a brass rail with an
+  orange slider, replacing the flat procedural keycap. It now appears on the
+  desktop and Start-menu shortcuts, in Programs & Features, on the installer
+  banner, and in the README.
+
+- **The tray keeps a separate, simpler mark.** Tested at real sizes, the new
+  artwork is excellent from 48px up but illegible at the 16px the notification
+  area actually renders: the row of keycaps blurs into a single shape, and its
+  cream body loses contrast against a light taskbar. The tray therefore keeps
+  the procedural swap-arrow glyph, recoloured to the artwork's rust palette so
+  the two read as one family. This is the same split Slack, Dropbox and Discord
+  ship, and for the same reason.
+
+- **Warm accent throughout** — the control panel's toggle dots, shortcut chips
+  and project link, plus the README badges, move from indigo `#7c5cff` to rust
+  `#d66a3e` to match the artwork.
+
+### Removed
+
+- `_ACCENT_DIM` in `core/flyout.py`, which was declared but never referenced.
+
+---
+
 ## [1.0.1] — 2026-07-22
 
 Two bugs, both caused by the app requiring administrator rights. Upgrading from 1.0.0 is recommended.
@@ -49,5 +76,6 @@ First public release.
 - Key events are injected via **`SendInput`** with real hardware scan codes resolved through `MapVirtualKeyW`, so applications that reject virtual-key-only input still accept them.
 - The app self-elevates: Windows UIPI blocks synthetic input from a lower-integrity process to an elevated window, so running elevated is what makes "works everywhere" true.
 
+[1.0.2]: https://github.com/kterfan/KeyMagic/releases/tag/v1.0.2
 [1.0.1]: https://github.com/kterfan/KeyMagic/releases/tag/v1.0.1
 [1.0.0]: https://github.com/kterfan/KeyMagic/releases/tag/v1.0.0

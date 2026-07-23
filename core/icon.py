@@ -1,19 +1,32 @@
 """
 Procedurally drawn application icon.
 
+Scope: this draws the **tray** mark only. The full application icon — the
+one on the desktop shortcut, in Programs & Features, in the installer and
+in the README — is the artwork at `assets/icon.ico`.
+
+Why the tray gets its own simpler mark
+---------------------------------------
+The tray renders at 16px. The full icon is a detailed render (a row of
+keycaps on a brass rail with a slider) that is beautiful at 48px and up and
+turns to mush below ~32px; on a light taskbar its cream body also loses
+contrast against the background. So the tray uses a bolder, higher-contrast
+glyph in the same palette, which is the same split Slack, Dropbox and
+Discord ship.
+
 Design
 -------
 A 3D extruded **keycap** — a rounded-square top face sitting on a visibly
 darker body, so the shape reads as a physical key rather than a flat badge.
-It is deliberately not a circle, it is unique to this app, and it is
-on-theme: this is a keyboard-layout tool, so its mark is a key.
+It is deliberately not a circle and it is on-theme: this is a
+keyboard-layout tool, so its mark is a key.
 
 The top face carries a two-way swap arrow (the actual function: convert
 text from one layout to the other).
 
-Everything is generated at runtime with Pillow, so the app ships with no
-external image assets and the icon can be recolored per state (active vs.
-paused) without maintaining separate files.
+It is generated at runtime with Pillow rather than shipped as a bitmap, so
+the paused state is a recolor of the same geometry instead of a second file
+that has to be kept in sync.
 
 Rendering notes
 ----------------
@@ -30,11 +43,12 @@ from PIL import Image, ImageDraw, ImageFilter
 # Supersampling factor — draw big, shrink down, get clean edges.
 _SS = 4
 
-# Active palette: indigo -> violet, a saturated modern gradient.
-_TOP_LIGHT = (129, 140, 248)     # indigo-400
-_TOP_DARK = (109, 40, 217)       # violet-700
-_BODY_LIGHT = (79, 70, 229)      # indigo-600
-_BODY_DARK = (49, 46, 129)       # indigo-900
+# Active palette: rust -> ember, sampled from assets/icon-source.png so the
+# tray mark reads as the same family as the full application icon.
+_TOP_LIGHT = (214, 106, 62)      # rust
+_TOP_DARK = (176, 74, 40)        # deep rust
+_BODY_LIGHT = (150, 62, 34)      # ember
+_BODY_DARK = (96, 40, 22)        # burnt umber
 
 # Paused palette: same geometry, drained of color so the state is obvious
 # at a glance in the tray without needing a second glyph.

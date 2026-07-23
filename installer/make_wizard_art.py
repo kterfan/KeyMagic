@@ -17,13 +17,20 @@ import sys
 
 from PIL import Image, ImageDraw, ImageFont
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from core.icon import build_icon  # noqa: E402
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, _ROOT)
 from core.config import UI  # noqa: E402
 
 AUTHOR = "Erfan Esmailzadeh"
 
 ART_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "art")
+# The wizard renders these large, so it uses the full application artwork
+# rather than the simplified tray glyph from core.icon.
+ICON_SOURCE = os.path.join(_ROOT, "assets", "icon-source.png")
+
+
+def app_icon(size: int) -> Image.Image:
+    return Image.open(ICON_SOURCE).convert("RGBA").resize((size, size), Image.LANCZOS)
 
 # Inno's nominal sizes; it scales these for high-DPI automatically.
 _BANNER_SIZE = (164, 314)
@@ -33,10 +40,12 @@ _HEADER_SIZE = (55, 55)
 # app icon — installer art is very visible and looks cheap if it is soft.
 _SS = 3
 
-_GRAD_TOP = (91, 62, 214)
-_GRAD_BOTTOM = (28, 20, 66)
-_TEXT = (255, 255, 255)
-_TEXT_DIM = (188, 178, 235)
+# Warm gradient sampled from the application artwork, so the banner and the
+# icon sitting on it belong to the same palette.
+_GRAD_TOP = (122, 58, 32)
+_GRAD_BOTTOM = (38, 22, 16)
+_TEXT = (247, 240, 230)
+_TEXT_DIM = (206, 168, 138)
 
 
 def _load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
@@ -70,7 +79,7 @@ def build_banner() -> Image.Image:
     draw = ImageDraw.Draw(image)
 
     icon_size = int(width * 0.52)
-    icon = build_icon(size=icon_size)
+    icon = app_icon(icon_size)
     image.paste(icon, ((width - icon_size) // 2, int(height * 0.13)), icon)
 
     def centred(text: str, y: int, font: ImageFont.FreeTypeFont, fill) -> None:
@@ -92,7 +101,7 @@ def build_header() -> Image.Image:
     size = _HEADER_SIZE[0] * _SS
     # Inno composites this on the wizard's white header strip.
     image = Image.new("RGB", (size, size), (255, 255, 255))
-    icon = build_icon(size=int(size * 0.86))
+    icon = app_icon(int(size * 0.86))
     offset = (size - icon.width) // 2
     image.paste(icon, (offset, offset), icon)
     return image.resize(_HEADER_SIZE, Image.LANCZOS)

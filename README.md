@@ -7,10 +7,10 @@
 **اصلاح متن تایپ‌شده با چیدمان اشتباه، در هر برنامه‌ای**
 **Fix wrong-layout typing anywhere on Windows**
 
-[![Release](https://img.shields.io/github/v/release/kterfan/KeyMagic?style=for-the-badge&color=7c5cff&labelColor=1c1c1e)](https://github.com/kterfan/KeyMagic/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/kterfan/KeyMagic/total?style=for-the-badge&color=7c5cff&labelColor=1c1c1e)](https://github.com/kterfan/KeyMagic/releases)
-[![License](https://img.shields.io/badge/license-MIT-7c5cff?style=for-the-badge&labelColor=1c1c1e)](LICENSE)
-[![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-7c5cff?style=for-the-badge&labelColor=1c1c1e&logo=windows&logoColor=white)](https://github.com/kterfan/KeyMagic/releases)
+[![Release](https://img.shields.io/github/v/release/kterfan/KeyMagic?style=for-the-badge&color=d66a3e&labelColor=1c1c1e)](https://github.com/kterfan/KeyMagic/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/kterfan/KeyMagic/total?style=for-the-badge&color=d66a3e&labelColor=1c1c1e)](https://github.com/kterfan/KeyMagic/releases)
+[![License](https://img.shields.io/badge/license-MIT-d66a3e?style=for-the-badge&labelColor=1c1c1e)](LICENSE)
+[![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-d66a3e?style=for-the-badge&labelColor=1c1c1e&logo=windows&logoColor=white)](https://github.com/kterfan/KeyMagic/releases)
 
 ### [⬇️ دانلود برای ویندوز &nbsp;·&nbsp; Download for Windows](https://github.com/kterfan/KeyMagic/releases/latest)
 
@@ -161,7 +161,7 @@ Hello my friend         ←  [F10]  ←      اثممخ ئغ بقهثدی
 <div dir="ltr" align="left">
 
 ```powershell
-Unblock-File .\KeyMagic-1.0.1-Setup.exe
+Unblock-File .\KeyMagic-1.0.2-Setup.exe
 ```
 
 </div>
@@ -184,7 +184,7 @@ Unblock-File .\KeyMagic-1.0.1-Setup.exe
 <div dir="ltr" align="left">
 
 ```powershell
-Get-FileHash KeyMagic-1.0.1-Setup.exe -Algorithm SHA256
+Get-FileHash KeyMagic-1.0.2-Setup.exe -Algorithm SHA256
 ```
 
 </div>
@@ -426,7 +426,7 @@ The source language is set to **auto-detect** (`sl=auto&tl=auto`), so you never 
 After that it runs like any local program. From PowerShell:
 
 ```powershell
-Unblock-File .\KeyMagic-1.0.1-Setup.exe
+Unblock-File .\KeyMagic-1.0.2-Setup.exe
 ```
 
 **Why that works:** Windows attaches an invisible marker to anything downloaded from the internet — the *Mark of the Web*, an NTFS alternate data stream called `Zone.Identifier`. SmartScreen only evaluates files carrying it. `Unblock` removes the marker.
@@ -445,7 +445,7 @@ Neither says anything about whether the file is safe — only that Windows doesn
 **To verify the download wasn't tampered with,** compare it against [`SHA256SUMS.txt`](https://github.com/kterfan/KeyMagic/releases/latest) in the release:
 
 ```powershell
-Get-FileHash KeyMagic-1.0.1-Setup.exe -Algorithm SHA256
+Get-FileHash KeyMagic-1.0.2-Setup.exe -Algorithm SHA256
 ```
 
 **Or don't trust my binary at all** — the source is right here. Clone it and build your own:

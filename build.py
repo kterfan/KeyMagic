@@ -30,7 +30,7 @@ DIST = os.path.join(ROOT, "dist")
 INSTALLER_DIR = os.path.join(ROOT, "installer")
 
 APP_NAME = "KeyMagic"
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 
 ISCC_CANDIDATES = [
     r"C:\Program Files (x86)\Inno Setup 6\ISCC.exe",
