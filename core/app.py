@@ -153,6 +153,10 @@ class KeyMagicApp:
             )
         self._listener.start()
 
+    def open_panel(self) -> None:
+        """Surface the control panel. Used when a second launch hands off here."""
+        self._flyout.show_panel()
+
     # -------------------------------------------------------------- lifecycle
     def shutdown(self) -> None:
         logger.info("Shutting down KeyMagic.")

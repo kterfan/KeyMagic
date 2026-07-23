@@ -7,6 +7,28 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); version
 
 ---
 
+## [1.0.3] — 2026-07-23
+
+### Fixed
+
+- **A second launch no longer produces a dead second instance.** KeyMagic
+  claims its hotkeys through `RegisterHotKey`, which is exclusive — so if the
+  app was already running (commonly: the logon task started it, then you
+  clicked the Start-menu shortcut), the second copy started, silently failed
+  to register any hotkey, and sat in the tray with dead shortcuts and no error
+  in the log. A launch now detects the running instance through a named mutex,
+  tells it to open its control panel, and exits instead of competing.
+
+### Technical notes
+
+- The running instance owns a hidden top-level window (found by class name);
+  a second launch signals it with a `RegisterWindowMessage` id shared across
+  processes. A broadcast or message-only window would not have worked — the
+  former does not reach a thread message queue, the latter is excluded from
+  broadcasts. See `core/single_instance.py`.
+
+---
+
 ## [1.0.2] — 2026-07-23
 
 ### Changed
@@ -76,6 +98,7 @@ First public release.
 - Key events are injected via **`SendInput`** with real hardware scan codes resolved through `MapVirtualKeyW`, so applications that reject virtual-key-only input still accept them.
 - The app self-elevates: Windows UIPI blocks synthetic input from a lower-integrity process to an elevated window, so running elevated is what makes "works everywhere" true.
 
+[1.0.3]: https://github.com/kterfan/KeyMagic/releases/tag/v1.0.3
 [1.0.2]: https://github.com/kterfan/KeyMagic/releases/tag/v1.0.2
 [1.0.1]: https://github.com/kterfan/KeyMagic/releases/tag/v1.0.1
 [1.0.0]: https://github.com/kterfan/KeyMagic/releases/tag/v1.0.0

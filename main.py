@@ -12,6 +12,7 @@ import logging
 import os
 import sys
 
+from core import single_instance
 from core.app import KeyMagicApp
 from core.config import UI
 from core.elevation import ensure_admin
@@ -43,9 +44,21 @@ def main() -> None:
 
     _configure_logging()
     logger = logging.getLogger(__name__)
+
+    # If KeyMagic is already running (e.g. the logon task started it and the
+    # user then clicked the shortcut), don't start a second tray whose
+    # hotkeys would silently fail to register — hand off to the running one
+    # and exit. Must come after logging is configured so the hand-off is
+    # recorded, and after elevation so the mutex name matches across launches.
+    if not single_instance.acquire():
+        single_instance.signal_existing_instance()
+        logger.info("Exiting: handed off to the already-running instance.")
+        return
+
     logger.info("Starting %s (elevated)...", UI.APP_NAME)
 
     app = KeyMagicApp()
+    single_instance.start_listener(app.open_panel)
     try:
         app.run()
     except KeyboardInterrupt:

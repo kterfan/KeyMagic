@@ -161,7 +161,7 @@ Hello my friend         ←  [F10]  ←      اثممخ ئغ بقهثدی
 <div dir="ltr" align="left">
 
 ```powershell
-Unblock-File .\KeyMagic-1.0.2-Setup.exe
+Unblock-File .\KeyMagic-1.0.3-Setup.exe
 ```
 
 </div>
@@ -184,7 +184,7 @@ Unblock-File .\KeyMagic-1.0.2-Setup.exe
 <div dir="ltr" align="left">
 
 ```powershell
-Get-FileHash KeyMagic-1.0.2-Setup.exe -Algorithm SHA256
+Get-FileHash KeyMagic-1.0.3-Setup.exe -Algorithm SHA256
 ```
 
 </div>
@@ -426,7 +426,7 @@ The source language is set to **auto-detect** (`sl=auto&tl=auto`), so you never 
 After that it runs like any local program. From PowerShell:
 
 ```powershell
-Unblock-File .\KeyMagic-1.0.2-Setup.exe
+Unblock-File .\KeyMagic-1.0.3-Setup.exe
 ```
 
 **Why that works:** Windows attaches an invisible marker to anything downloaded from the internet — the *Mark of the Web*, an NTFS alternate data stream called `Zone.Identifier`. SmartScreen only evaluates files carrying it. `Unblock` removes the marker.
@@ -445,7 +445,7 @@ Neither says anything about whether the file is safe — only that Windows doesn
 **To verify the download wasn't tampered with,** compare it against [`SHA256SUMS.txt`](https://github.com/kterfan/KeyMagic/releases/latest) in the release:
 
 ```powershell
-Get-FileHash KeyMagic-1.0.2-Setup.exe -Algorithm SHA256
+Get-FileHash KeyMagic-1.0.3-Setup.exe -Algorithm SHA256
 ```
 
 **Or don't trust my binary at all** — the source is right here. Clone it and build your own:
