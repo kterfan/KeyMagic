@@ -55,7 +55,7 @@ class ClipboardConfig:
 @dataclass(frozen=True)
 class UIConfig:
     APP_NAME: str = "KeyMagic"
-    VERSION: str = "1.0.3"
+    VERSION: str = "1.0.4"
     TOAST_DURATION: str = "short"  # win11toast: "short" or "long"
     LOG_FILENAME: str = "keymagic.log"
 

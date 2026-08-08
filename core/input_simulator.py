@@ -22,8 +22,11 @@ plain Win32 edit controls.
 from __future__ import annotations
 
 import ctypes
+import logging
 import time
 from ctypes import wintypes
+
+logger = logging.getLogger(__name__)
 
 user32 = ctypes.WinDLL("user32", use_last_error=True)
 
@@ -32,6 +35,7 @@ KEYEVENTF_KEYUP = 0x0002
 KEYEVENTF_SCANCODE = 0x0008
 KEYEVENTF_EXTENDEDKEY = 0x0001
 MAPVK_VK_TO_VSC = 0
+WM_INPUTLANGCHANGEREQUEST = 0x0050
 
 VK_CONTROL = 0x11
 VK_SHIFT = 0x10
@@ -52,6 +56,23 @@ _EXTENDED_KEYS = {VK_HOME}
 _KEY_STEP_DELAY_SECONDS = 0.015
 
 ULONG_PTR = wintypes.WPARAM  # pointer-sized unsigned integer on both 32/64-bit
+LPARAM = ctypes.c_ssize_t  # pointer-sized signed integer, for PostMessageW's lParam
+
+# Primary language IDs (low word of an HKL) for the two layouts we toggle
+# between. See LayoutMapper in layout_map.py for the character-level fix
+# this complements.
+_LANG_IDS = {"en": 0x0409, "fa": 0x0429}
+
+user32.GetForegroundWindow.restype = wintypes.HWND
+user32.PostMessageW.argtypes = [wintypes.HWND, wintypes.UINT, ULONG_PTR, LPARAM]
+user32.PostMessageW.restype = wintypes.BOOL
+user32.GetKeyboardLayoutList.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_void_p)]
+user32.GetKeyboardLayoutList.restype = ctypes.c_int
+
+# Cache of target-language -> installed HKL, populated lazily on first
+# successful lookup so a normal run only ever calls GetKeyboardLayoutList
+# once per language.
+_hkl_cache: dict[str, int] = {}
 
 
 class _KEYBDINPUT(ctypes.Structure):
@@ -158,3 +179,42 @@ def send_paste() -> None:
 def send_select_to_line_start() -> None:
     """Hardware-level Shift+Home — extends the selection back to the start of the current line."""
     _send_chord(VK_SHIFT, VK_HOME)
+
+
+def _find_installed_layout(lang_id: int) -> "int | None":
+    count = user32.GetKeyboardLayoutList(0, None)
+    if count <= 0:
+        return None
+    buffer = (ctypes.c_void_p * count)()
+    user32.GetKeyboardLayoutList(count, buffer)
+    for hkl in buffer:
+        if hkl is not None and (hkl & 0xFFFF) == lang_id:
+            return hkl
+    return None
+
+
+def switch_input_language(target: str) -> None:
+    """
+    Ask the foreground window to switch its active keyboard layout to
+    `target` ("en" or "fa"), the same way Windows' own language-switch
+    hotkey does (WM_INPUTLANGCHANGEREQUEST). No-ops quietly if `target`
+    isn't installed in Windows' language list — the fix this supports
+    (LayoutFixAction) already worked before this existed, so a failure
+    here should never be treated as an error.
+    """
+    lang_id = _LANG_IDS.get(target)
+    if lang_id is None:
+        return
+
+    hkl = _hkl_cache.get(target)
+    if hkl is None:
+        hkl = _find_installed_layout(lang_id)
+        if hkl is None:
+            logger.warning("Keyboard layout for %r is not installed; skipping language switch.", target)
+            return
+        _hkl_cache[target] = hkl
+
+    hwnd = user32.GetForegroundWindow()
+    if not hwnd:
+        return
+    user32.PostMessageW(hwnd, WM_INPUTLANGCHANGEREQUEST, 0, hkl)

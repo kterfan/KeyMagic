@@ -7,6 +7,32 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); version
 
 ---
 
+## [1.0.4] — 2026-08-08
+
+### Fixed
+
+- **<kbd>F10</kbd> mis-fixed `پ` and `؟`/`!`-adjacent punctuation.** The
+  English↔Persian character table (`core/layout_map.py`) was built for
+  "Persian (Standard)" (`kbdfar.dll`), but Windows' default "Persian"
+  keyboard (`kbdfa.dll`) — the one actually installed — places several keys
+  differently. Concretely: پ sits on the backslash key, not `M` (which the
+  table had claimed, and which had no backslash entry at all, so `\` never
+  converted); and shift+`/` produces `؟`, not `.`. Rebuilt the table against
+  Microsoft's official legacy-layout reference (KLID `00000429`), which also
+  corrected `@ # $ % ^ & ( ) : " < >` and the unshifted `.`/`/` keys — all of
+  which the old table mapped to Persian punctuation the legacy layout doesn't
+  actually produce there.
+
+### Added
+
+- **F10 now switches the OS keyboard language to match the fix.** After
+  converting mis-typed text, KeyMagic posts `WM_INPUTLANGCHANGEREQUEST` to
+  the foreground window — the same mechanism Windows' own language-switch
+  hotkey uses — so the active input language follows the text instead of
+  needing a separate manual toggle. See `input_simulator.switch_input_language()`.
+
+---
+
 ## [1.0.3] — 2026-07-23
 
 ### Fixed
@@ -98,6 +124,7 @@ First public release.
 - Key events are injected via **`SendInput`** with real hardware scan codes resolved through `MapVirtualKeyW`, so applications that reject virtual-key-only input still accept them.
 - The app self-elevates: Windows UIPI blocks synthetic input from a lower-integrity process to an elevated window, so running elevated is what makes "works everywhere" true.
 
+[1.0.4]: https://github.com/kterfan/KeyMagic/releases/tag/v1.0.4
 [1.0.3]: https://github.com/kterfan/KeyMagic/releases/tag/v1.0.3
 [1.0.2]: https://github.com/kterfan/KeyMagic/releases/tag/v1.0.2
 [1.0.1]: https://github.com/kterfan/KeyMagic/releases/tag/v1.0.1

@@ -9,7 +9,7 @@
 ; ============================================================================
 
 #define AppName        "KeyMagic"
-#define AppVersion     "1.0.3"
+#define AppVersion     "1.0.4"
 #define AppPublisher   "Erfan Esmailzadeh"
 #define AppURL         "https://github.com/kterfan/KeyMagic"
 #define AppExeName     "KeyMagic.exe"

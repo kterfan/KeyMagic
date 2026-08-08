@@ -150,6 +150,12 @@ class LayoutFixAction(BaseClipboardAction):
     #: selection, short enough that falling back feels instant.
     _PROBE_TIMEOUT_SECONDS = 0.25
 
+    def __init__(self, clipboard: ClipboardManager, notifier: ToastNotifier) -> None:
+        super().__init__(clipboard, notifier)
+        # Set by process(), read by on_success() to switch the OS keyboard
+        # layout to match the language the text was just fixed *into*.
+        self._target_language: "str | None" = None
+
     def _capture_text(self) -> "str | None":
         existing = self._clipboard.capture_selection_text(
             input_simulator.send_copy, timeout=self._PROBE_TIMEOUT_SECONDS
@@ -164,9 +170,13 @@ class LayoutFixAction(BaseClipboardAction):
         return self._clipboard.capture_selection_text(_select_line_and_copy)
 
     def process(self, selected_text: str) -> str:
+        dominant = LayoutMapper.detect_dominant_script(selected_text)
+        self._target_language = "fa" if dominant == "en" else "en" if dominant == "fa" else None
         return LayoutMapper.convert(selected_text)
 
     def on_success(self) -> None:
+        if self._target_language is not None:
+            input_simulator.switch_input_language(self._target_language)
         self._notifier.success("layout_fixed")
 
 

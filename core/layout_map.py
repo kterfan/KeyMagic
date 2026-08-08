@@ -1,11 +1,13 @@
 """
-Bi-directional English (QWERTY) <-> Persian (standard Iranian layout) keymap.
+Bi-directional English (QWERTY) <-> Persian keymap.
 
 The mapping below reflects physical key position, not meaning: it maps each
 English QWERTY key to the character produced by the same physical key on
-the standard Iranian Persian keyboard layout used by Windows. This is what
-lets us "fix" text that was typed with the wrong active layout — the user's
-keystrokes landed on the right *keys*, just the wrong *characters*.
+Windows' legacy "Persian" keyboard layout (kbdfa.dll, KLID 00000429 — the
+one installed by default, distinct from "Persian (Standard)"/kbdfar.dll).
+This is what lets us "fix" text that was typed with the wrong active layout
+— the user's keystrokes landed on the right *keys*, just the wrong
+*characters*.
 """
 
 from __future__ import annotations
@@ -19,7 +21,8 @@ _EN_TO_FA_BASE = {
     "a": "ش", "s": "س", "d": "ی", "f": "ب", "g": "ل", "h": "ا",
     "j": "ت", "k": "ن", "l": "م", ";": "ک", "'": "گ",
     "z": "ظ", "x": "ط", "c": "ز", "v": "ر", "b": "ذ", "n": "د",
-    "m": "پ", ",": "و", ".": "،", "/": ".",
+    "m": "ئ", ",": "و",
+    "\\": "پ",
 }
 
 # Digit row: standard layout produces Persian (Eastern Arabic-Indic) digits.
@@ -30,14 +33,13 @@ _EN_TO_FA_DIGITS = {
 
 # Shifted symbol row commonly produced on the Persian layout.
 _EN_TO_FA_SHIFTED = {
-    "!": "!", "@": "٬", "#": "٫", "$": "﷼", "%": "٪",
-    "^": "×", "&": "،", "*": "*", "(": ")", ")": "(",
+    "!": "!", "*": "*",
     "Q": "ض", "W": "ص", "E": "ث", "R": "ق", "T": "ف", "Y": "غ",
-    "U": "ع", "I": "ه", "O": "خ", "P": "ح", "{": "ج", "}": "چ",
+    "U": "ع", "I": "ه", "O": "خ", "P": "ح", "{": "}", "}": "{",
     "A": "ش", "S": "س", "D": "ی", "F": "ب", "G": "ل", "H": "ا",
-    "J": "ت", "K": "ن", "L": "م", ":": "ک", '"': "گ",
+    "J": "ت", "K": "ن", "L": "م",
     "Z": "ظ", "X": "ط", "C": "ز", "V": "ر", "B": "ذ", "N": "د",
-    "M": "پ", "<": "و", ">": "،", "?": ".",
+    "M": "ئ", "?": "؟",
 }
 
 _EN_TO_FA = {**_EN_TO_FA_BASE, **_EN_TO_FA_DIGITS, **_EN_TO_FA_SHIFTED}
